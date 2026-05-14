@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Wage Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFF8F0;
+  --card: #FFFFFF;
+  --accent: #E65C00;
+  --accent2: #FF8C38;
+  --gold: #F9A825;
+  --green: #2E7D32;
+  --green-bg: #E8F5E9;
+  --red: #C62828;
+  --red-bg: #FFEBEE;
+  --text: #1A1208;
+  --text2: #5C4A30;
+  --text3: #9E8A6E;
+  --border: #EDD9C0;
+  --shadow: 0 2px 14px rgba(230,92,0,0.09);
+  --radius: 14px;
+  --fh: 'Baloo 2', cursive;
+  --fb: 'Noto Sans', sans-serif;
+  --hh: 66px;
+  --nh: 60px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── AUTH SCREEN ── */
+#auth-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:20px;
+  background:linear-gradient(135deg,#FFF3E0 0%,#FFF8F0 60%,#FFF9F5 100%);
+}
+.auth-box{
+  background:#fff;border-radius:20px;padding:36px 32px;
+  width:100%;max-width:400px;
+  box-shadow:0 8px 40px rgba(230,92,0,0.15);
+  border:1.5px solid var(--border);
+}
+.auth-logo{
+  display:flex;align-items:center;gap:12px;margin-bottom:28px;justify-content:center;
+}
+.auth-logo .ico{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+}
+.auth-logo h1{font-family:var(--fh);font-size:22px;color:var(--text)}
+.auth-logo p{font-size:12px;color:var(--text3)}
+.auth-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:24px}
+.auth-tab{
+  flex:1;padding:10px;text-align:center;font-weight:700;font-size:14px;
+  color:var(--text3);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;
+  transition:all .2s;
+}
+.auth-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.auth-form{display:none}
+.auth-form.active{display:block}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fg label{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px}
+.fg input{
+  padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;
+  font-size:14px;font-family:var(--fb);color:var(--text);background:var(--bg);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.fg input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(230,92,0,.09)}
+.auth-hint{font-size:12px;color:var(--text3);margin-bottom:18px;line-height:1.5}
+.btn-full{
+  width:100%;padding:12px;background:var(--accent);color:#fff;border:none;
+  border-radius:11px;font-size:15px;font-weight:700;font-family:var(--fb);cursor:pointer;
+  transition:background .2s,transform .1s;margin-top:4px;
+}
+.btn-full:hover{background:#C04E00}
+.btn-full:active{transform:scale(.98)}
+.auth-err{
+  background:var(--red-bg);color:var(--red);padding:10px 14px;border-radius:9px;
+  font-size:13px;margin-bottom:14px;display:none;border:1px solid #ef9a9a;
+}
+
+/* ── HEADER ── */
+header{
+  position:fixed;top:0;left:0;right:0;height:var(--hh);
+  background:linear-gradient(135deg,var(--accent) 0%,#FF6B1A 55%,var(--accent2) 100%);
+  z-index:100;box-shadow:0 4px 20px rgba(230,92,0,.28);
+}
+.hi{
+  max-width:1000px;margin:auto;height:100%;padding:0 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo .li{
+  width:40px;height:40px;border-radius:10px;
+  background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.logo h1{font-family:var(--fh);font-size:19px;color:#fff;font-weight:800}
+.logo p{font-size:11px;color:rgba(255,255,255,.8);margin-top:1px}
+.ha{display:flex;align-items:center;gap:8px}
+.user-chip{
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);
+  color:#fff;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+}
+.btn-hdr{
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);
+  color:#fff;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:var(--fb);transition:background .2s;
+}
+.btn-hdr:hover{background:rgba(255,255,255,.32)}
+
+/* ── NAV ── */
+.nav{
+  position:fixed;top:var(--hh);left:0;right:0;height:var(--nh);
+  background:#fff;border-bottom:1.5px solid var(--border);z-index:99;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);overflow-x:auto;scrollbar-width:none;
+}
+.nav::-webkit-scrollbar{display:none}
+.nav-in{
+  max-width:1000px;margin:auto;height:100%;
+  display:flex;min-width:100%;
+}
+.nt{
+  flex:1;min-width:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;font-size:11px;color:var(--text3);cursor:pointer;
+  border-bottom:3px solid transparent;transition:all .2s;user-select:none;white-space:nowrap;padding:4px;
+}
+.nt .i{font-size:17px}
+.nt.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700;background:#fff9f5}
+.nt:hover:not(.active){background:#fff5ee;color:var(--text2)}
+
+/* ── MAIN ── */
+main{
+  max-width:1000px;margin:auto;
+  padding:calc(var(--hh) + var(--nh) + 20px) 16px 80px;
+}
+.page{display:none}
+.page.active{display:block;animation:fi .18s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CARDS ── */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:20px}
+.sc{
+  background:var(--card);border-radius:var(--radius);padding:16px 14px;
+  box-shadow:var(--shadow);border:1.5px solid var(--border);position:relative;overflow:hidden;
+}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--ss,var(--accent))}
+.sc .lbl{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.sc .val{font-family:var(--fh);font-size:22px;font-weight:800;line-height:1}
+.sc .sub{font-size:11px;color:var(--text3);margin-top:3px}
+.c-or{--ss:#E65C00}.c-gr{--ss:#2E7D32}.c-go{--ss:#F9A825}.c-bl{--ss:#1565C0}
+
+/* ── SECTION TITLE ── */
+.st{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--text);margin:22px 0 12px;display:flex;align-items:center;gap:8px}
+.st span{color:var(--accent)}
+
+/* ── FORM ── */
+.fc{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border:1.5px solid var(--border);margin-bottom:20px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:14px}
+.fg2{display:flex;flex-direction:column;gap:5px}
+.fg2 label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px}
+.fg2 input,.fg2 select,.fg2 textarea{
+  padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;
+  font-size:14px;font-family:var(--fb);color:var(--text);background:var(--bg);outline:none;width:100%;
+  transition:border-color .2s,background .2s;-webkit-appearance:none;appearance:none;
+}
+.fg2 select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239E8A6E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;
+}
+.fg2 input:focus,.fg2 select:focus,.fg2 textarea:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(230,92,0,.09)}
+.fg2 textarea{resize:vertical;min-height:70px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.bp{
+  background:var(--accent);color:#fff;border:none;padding:11px 22px;border-radius:10px;
+  font-size:14px;font-weight:700;font-family:var(--fb);cursor:pointer;
+  transition:background .2s,transform .1s;display:inline-flex;align-items:center;gap:6px;
+}
+.bp:hover{background:#C04E00}.bp:active{transform:scale(.97)}
+.bs{
+  background:transparent;color:var(--accent);border:1.5px solid var(--accent);
+  padding:10px 18px;border-radius:10px;font-size:14px;font-weight:600;
+  font-family:var(--fb);cursor:pointer;transition:all .2s;
+}
+.bs:hover{background:rgba(230,92,0,.07)}
+.bd{
+  background:transparent;color:var(--red);border:1.5px solid #e57373;
+  padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;
+  font-family:var(--fb);cursor:pointer;
+}
+.bd:hover{background:var(--red-bg)}
+.bsm{padding:6px 12px !important;font-size:12px !important;border-radius:8px !important}
+
+/* ── ENTRY LIST ── */
+.el{display:flex;flex-direction:column;gap:10px}
+.ei{
+  background:var(--card);border-radius:var(--radius);padding:14px 16px;
+  box-shadow:var(--shadow);border:1.5px solid var(--border);
+  display:flex;gap:12px;transition:transform .15s,box-shadow .15s;
+}
+.ei:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(230,92,0,.12)}
+.ed{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.dw{background:#FFF3E0}.dh{background:#E3F2FD}.do{background:#F3E5F5}.dho{background:#E8F5E9}.da{background:#FFEBEE}
+.ein{flex:1;min-width:0}
+.etop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:5px}
+.edate{font-family:var(--fh);font-size:15px;font-weight:700}
+.eamt{font-family:var(--fh);font-size:17px;font-weight:800;color:var(--green);flex-shrink:0}
+.eamt.z{color:var(--text3)}
+.emeta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.bdg{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.bw{background:#FFF3E0;color:#BF360C}.bh{background:#E3F2FD;color:#0D47A1}
+.bo{background:#F3E5F5;color:#4A148C}.bho{background:#E8F5E9;color:#1B5E20}.ba{background:#FFEBEE;color:#B71C1C}
+.mc{font-size:12px;color:var(--text3);display:inline-flex;align-items:center;gap:3px}
+.pc{font-size:11px;font-weight:600;padding:1px 7px;border-radius:12px}
+.pp{background:#E8F5E9;color:#1B5E20}.ppnd{background:#FFF8E1;color:#E65100}.ppt{background:#FFF3E0;color:#BF360C}
+.enote{font-size:12px;color:var(--text2);margin-top:5px;font-style:italic;padding:4px 8px;background:#FFF8F0;border-radius:6px;border-left:3px solid var(--border)}
+.ea{display:flex;gap:6px;margin-top:10px}
+
+/* ── FILTER BAR ── */
+.fb{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center}
+.fb input[type=search]{
+  flex:1;min-width:150px;padding:8px 12px;border:1.5px solid var(--border);border-radius:9px;
+  font-size:13px;font-family:var(--fb);color:var(--text);background:var(--card);outline:none;
+}
+.fb select{
+  padding:8px 28px 8px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;
+  font-family:var(--fb);color:var(--text);background:var(--card);outline:none;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239E8A6E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+}
+.fb input:focus,.fb select:focus{border-color:var(--accent)}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:52px 20px;color:var(--text3)}
+.empty .ico{font-size:52px;margin-bottom:14px}
+.empty h3{font-family:var(--fh);font-size:18px;color:var(--text2);margin-bottom:8px}
+.empty p{font-size:14px;line-height:1.6}
+
+/* ── LOAN LETTER ── */
+.lprev{
+  background:#FFFEF5;border:2px dashed #D4C5A0;border-radius:var(--radius);
+  padding:24px;font-family:'Georgia',serif;font-size:14px;line-height:1.8;
+  color:#111;white-space:pre-wrap;min-height:300px;word-break:break-word;
+}
+.lactns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+/* ── PROFILE ── */
+.pav{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh);font-size:28px;font-weight:800;color:#fff;
+  margin-bottom:14px;box-shadow:0 4px 12px rgba(230,92,0,.3);
+}
+
+/* ── REPORT BARS ── */
+.mb{margin-bottom:14px}
+.bl2{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;font-weight:500;color:var(--text2)}
+.bl2 .bv{font-weight:700;color:var(--text)}
+.bt{height:10px;background:#F0E4D4;border-radius:99px;overflow:hidden}
+.bf{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
+
+/* ── TABLE ── */
+.stbl{width:100%;border-collapse:collapse;font-size:14px}
+.stbl td{padding:10px 4px;border-bottom:1px solid var(--border);vertical-align:middle}
+.stbl tr:last-child td{border-bottom:none}
+.stbl td:last-child{text-align:right;font-weight:700}
+.stbl td:first-child{color:var(--text2)}
+
+/* ── INFO BOX ── */
+.ib{background:#E8F5E9;border:1.5px solid #A5D6A7;border-radius:10px;padding:12px 16px;font-size:13px;color:#1B5E20;margin-bottom:14px;line-height:1.5}
+
+/* ── LOADING SPINNER ── */
+.spinner{
+  display:inline-block;width:20px;height:20px;border:2.5px solid rgba(255,255,255,.4);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-overlay{
+  position:fixed;inset:0;background:rgba(255,248,240,.85);
+  z-index:9998;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;
+  display:none;
+}
+.loading-overlay.show{display:flex}
+.loading-text{font-family:var(--fh);font-size:16px;color:var(--accent)}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:#1A1208;color:#fff;padding:12px 24px;border-radius:30px;
+  font-size:14px;font-weight:500;z-index:9999;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 8px 28px rgba(0,0,0,.28);pointer-events:none;white-space:nowrap;
+}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── MODAL ── */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;align-items:center;justify-content:center;padding:20px}
+.mo.open{display:flex}
+.md{background:var(--card);border-radius:18px;padding:24px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:mi .2s ease}
+@keyframes mi{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.md h3{font-family:var(--fh);font-size:18px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.ma{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;flex-wrap:wrap}
+
+@media(max-width:520px){
+  :root{--hh:60px;--nh:52px}
+  .sc .val{font-size:18px}
+  .nt{font-size:10px;min-width:56px}
+  .nt .i{font-size:15px}
+  .hi{padding:0 12px}
+  .logo h1{font-size:17px}
+  .logo p{display:none}
+  .btn-hdr{padding:5px 9px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ AUTH SCREEN ══ -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="ico">💼</div>
+      <div>
+        <h1>Wage Tracker</h1>
+        <p>Daily Earnings Record</p>
+      </div>
+    </div>
+
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="showAuthTab('login')" id="atab-login">🔑 Login</div>
+      <div class="auth-tab" onclick="showAuthTab('register')" id="atab-register">📝 Register</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="auth-form active" id="aform-login">
+      <div id="login-err" class="auth-err"></div>
+      <div class="fg">
+        <label>Phone Number</label>
+        <input type="tel" id="login-phone" placeholder="+91 XXXXX XXXXX" autocomplete="tel">
+      </div>
+      <div class="fg">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="Your password" autocomplete="current-password">
+      </div>
+      <button class="btn-full" onclick="doLogin()">🔑 Login</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="auth-form" id="aform-register">
+      <div id="reg-err" class="auth-err"></div>
+      <p class="auth-hint">📲 Create your account to save all your wage records securely.</p>
+      <div class="fg">
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="Your full name" autocomplete="name">
+      </div>
+      <div class="fg">
+        <label>Phone Number</label>
+        <input type="tel" id="reg-phone" placeholder="+91 XXXXX XXXXX" autocomplete="tel">
+      </div>
+      <div class="fg">
+        <label>Password (min 6 chars)</label>
+        <input type="password" id="reg-pass" placeholder="Create a password" autocomplete="new-password">
+      </div>
+      <div class="fg">
+        <label>Confirm Password</label>
+        <input type="password" id="reg-pass2" placeholder="Repeat password" autocomplete="new-password">
+      </div>
+      <button class="btn-full" onclick="doRegister()">📝 Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app-screen" style="display:none">
+
+<header>
+  <div class="hi">
+    <div class="logo">
+      <div class="li">💼</div>
+      <div>
+        <h1>Wage Tracker</h1>
+        <p>Daily Earnings Record</p>
+      </div>
+    </div>
+    <div class="ha">
+      <div class="user-chip" id="user-chip">👤 —</div>
+      <button class="btn-hdr" onclick="doLogout()">🚪 Logout</button>
+    </div>
+  </div>
+</header>
+
+<div class="nav">
+  <div class="nav-in">
+    <div class="nt active" onclick="switchTab('dashboard')" id="tab-dashboard"><span class="i">🏠</span>Dashboard</div>
+    <div class="nt" onclick="switchTab('add')"       id="tab-add"><span class="i">➕</span>Add Entry</div>
+    <div class="nt" onclick="switchTab('history')"   id="tab-history"><span class="i">📋</span>History</div>
+    <div class="nt" onclick="switchTab('report')"    id="tab-report"><span class="i">📊</span>Report</div>
+    <div class="nt" onclick="switchTab('loan')"      id="tab-loan"><span class="i">🏦</span>Loan Letter</div>
+    <div class="nt" onclick="switchTab('profile')"   id="tab-profile"><span class="i">👤</span>Profile</div>
+  </div>
+</div>
+
+<main>
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="sg" id="summary-grid"></div>
+  <div class="st">📅 <span>Recent</span> Entries</div>
+  <div class="el" id="recent-list"></div>
+</div>
+
+<!-- ADD ENTRY -->
+<div class="page" id="page-add">
+  <div class="st">➕ <span>Add</span> Work Entry</div>
+
+  <!-- Daily Rate Banner -->
+  <div id="rate-banner" style="background:#FFF3E0;border:1.5px solid #FFB74D;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#E65C00;display:none;align-items:center;gap:10px">
+    <span style="font-size:20px">⚠️</span>
+    <span>Set your <strong>Daily Rate</strong> in Profile so wages auto-calculate!
+      <button onclick="switchTab('profile')" style="background:var(--accent);color:#fff;border:none;padding:3px 10px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;margin-left:6px">Go to Profile →</button>
+    </span>
+  </div>
+
+  <div class="fc">
+    <!-- Live Wage Preview -->
+    <div style="background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border:2px solid #66BB6A;border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:11px;color:#2E7D32;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">💰 Calculated Wage</div>
+        <div id="wage-preview-amt" style="font-family:var(--fh);font-size:32px;font-weight:800;color:#1B5E20;line-height:1">₹0</div>
+        <div id="wage-preview-desc" style="font-size:12px;color:#388E3C;margin-top:4px">Select work type to auto-calculate</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;color:#2E7D32;font-weight:600;margin-bottom:3px">Your Daily Rate</div>
+        <div id="rate-display" style="font-family:var(--fh);font-size:20px;font-weight:800;color:#2E7D32">₹0/day</div>
+        <button onclick="switchTab('profile')" style="font-size:11px;color:#2E7D32;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;margin-top:3px;font-family:var(--fb)">✏️ Edit Rate</button>
+      </div>
+    </div>
+
+    <div class="fgrid">
+      <div class="fg2"><label>Date</label><input type="date" id="entry-date"></div>
+      <div class="fg2">
+        <label>Work Type</label>
+        <select id="entry-type" onchange="autoCalcWage()">
+          <option value="work">✅ Full Day Work</option>
+          <option value="half">🌓 Half Day</option>
+          <option value="overtime">⚡ Overtime</option>
+          <option value="holiday">🎉 Holiday / Festival</option>
+          <option value="absent">❌ Absent</option>
+        </select>
+      </div>
+      <div class="fg2">
+        <label>Daily Rate (₹) <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">— base per day</span></label>
+        <input type="number" id="entry-rate" placeholder="e.g. 550" min="0" step="0.5" oninput="autoCalcWage()" style="border-color:var(--accent)">
+      </div>
+      <div class="fg2">
+        <label>Overtime Hours <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">extra hrs worked</span></label>
+        <input type="number" id="entry-ot-hours" placeholder="0" min="0" max="12" step="0.5" oninput="autoCalcWage()">
+      </div>
+      <div class="fg2">
+        <label>OT Rate/hr (₹) <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">per overtime hour</span></label>
+        <input type="number" id="entry-ot-rate" placeholder="e.g. 80" min="0" step="0.5" oninput="autoCalcWage()">
+      </div>
+      <div class="fg2">
+        <label>Deductions (₹) <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">advance/fine/loan</span></label>
+        <input type="number" id="entry-deduct" placeholder="0" min="0" step="0.5" oninput="autoCalcWage()">
+      </div>
+    </div>
+
+    <!-- Final wage box -->
+    <div style="background:#F1F8E9;border:2px solid #66BB6A;border-radius:10px;padding:14px 16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:13px;font-weight:700;color:#2E7D32">💵 Final Wage to Save</span>
+        <span style="font-size:11px;color:#388E3C">Auto-calculated · edit if needed</span>
+      </div>
+      <input type="number" id="entry-wage" placeholder="0" min="0" step="0.5"
+        style="font-family:var(--fh);font-size:26px;font-weight:800;color:#1B5E20;
+               border:2px solid #66BB6A;border-radius:10px;padding:10px 14px;
+               background:#fff;width:100%;outline:none;
+               -webkit-appearance:none;appearance:none">
+    </div>
+
+    <div class="fgrid">
+      <div class="fg2"><label>Hours Worked</label><input type="number" id="entry-hours" placeholder="8" min="0" max="24" step="0.5"></div>
+      <div class="fg2"><label>Employer / Job Site</label><input type="text" id="entry-employer" placeholder="e.g. Ram Construction"></div>
+      <div class="fg2">
+        <label>Payment Status</label>
+        <select id="entry-paid">
+          <option value="paid">✅ Paid</option>
+          <option value="pending">⏳ Pending</option>
+          <option value="partial">🔶 Partially Paid</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg2" style="margin-bottom:16px"><label>Notes (optional)</label><textarea id="entry-note" placeholder="Any extra info…"></textarea></div>
+    <div class="btns">
+      <button class="bp" onclick="saveEntry()">💾 Save Entry</button>
+      <button class="bs" onclick="clearForm()">✖ Clear</button>
+    </div>
+  </div>
+
+  <div class="st">⚡ <span>Quick</span> Actions</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+    <button class="bs" onclick="quickEntry('work')">✅ Full Day — Today</button>
+    <button class="bs" onclick="quickEntry('half')">🌓 Half Day — Today</button>
+    <button class="bs" onclick="quickEntry('absent')">❌ Absent — Today</button>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-history">
+  <div class="st">📋 <span>Work</span> History</div>
+  <div class="fb">
+    <input type="search" placeholder="🔍 Search employer, notes…" id="srch" oninput="renderHistory()">
+    <select id="flt-month" onchange="renderHistory()"><option value="">All Months</option></select>
+    <select id="flt-type"  onchange="renderHistory()">
+      <option value="">All Types</option>
+      <option value="work">Full Day</option><option value="half">Half Day</option>
+      <option value="overtime">Overtime</option><option value="holiday">Holiday</option><option value="absent">Absent</option>
+    </select>
+    <select id="flt-paid" onchange="renderHistory()">
+      <option value="">All Payments</option>
+      <option value="paid">Paid</option><option value="pending">Pending</option><option value="partial">Partial</option>
+    </select>
+  </div>
+  <div class="el" id="history-list"></div>
+</div>
+
+<!-- REPORT -->
+<div class="page" id="page-report">
+  <div class="st">📊 <span>Earnings</span> Report</div>
+  <div class="fc" style="margin-bottom:16px">
+    <div class="fgrid">
+      <div class="fg2"><label>Year</label><select id="rpt-year" onchange="renderReport()"></select></div>
+      <div class="fg2">
+        <label>Month</label>
+        <select id="rpt-month" onchange="renderReport()">
+          <option value="">Full Year</option>
+          <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+          <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+          <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+          <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="rpt-content"></div>
+</div>
+
+<!-- LOAN LETTER -->
+<div class="page" id="page-loan">
+  <div class="st">🏦 <span>Income Certificate</span> for Loan</div>
+  <div class="ib">ℹ️ Generated from your recorded wage data. Fill Profile first for best results. Print or copy to submit to your bank.</div>
+  <div class="fc" style="margin-bottom:16px">
+    <div class="fgrid">
+      <div class="fg2"><label>Bank / Lender Name</label><input type="text" id="ln-bank" placeholder="State Bank of India"></div>
+      <div class="fg2"><label>Loan Purpose</label><input type="text" id="ln-purpose" placeholder="Home loan, vehicle…"></div>
+      <div class="fg2"><label>Loan Amount (₹)</label><input type="number" id="ln-amount" placeholder="100000"></div>
+      <div class="fg2">
+        <label>Show Data For</label>
+        <select id="ln-months"><option value="3">Last 3 Months</option><option value="6" selected>Last 6 Months</option><option value="12">Last 12 Months</option></select>
+      </div>
+    </div>
+    <button class="bp" onclick="generateLoan()">📄 Generate Certificate</button>
+  </div>
+  <div class="lprev" id="loan-prev">Click "Generate Certificate" to preview your income certificate.</div>
+  <div class="lactns">
+    <button class="bp" onclick="printLoan()">🖨 Print / Save PDF</button>
+    <button class="bs" onclick="copyLoan()">📋 Copy Text</button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="page" id="page-profile">
+  <div class="st">👤 <span>Worker</span> Profile</div>
+  <div class="fc">
+    <div class="pav" id="pav">?</div>
+    <div class="fgrid">
+      <div class="fg2"><label>Full Name</label><input type="text" id="prf-name" oninput="updatePav()"></div>
+      <div class="fg2"><label>Phone (login)</label><input type="tel" id="prf-phone" disabled style="opacity:.6;cursor:not-allowed"></div>
+      <div class="fg2"><label>Aadhaar / ID</label><input type="text" id="prf-id" placeholder="XXXX XXXX XXXX"></div>
+      <div class="fg2"><label>Occupation</label><input type="text" id="prf-occ" placeholder="Mason, carpenter…"></div>
+      <div class="fg2"><label>Daily Rate (₹)</label><input type="number" id="prf-rate" placeholder="500"></div>
+      <div class="fg2"><label>Address</label><input type="text" id="prf-addr" placeholder="Your full address"></div>
+    </div>
+    <button class="bp" onclick="saveProfile()">💾 Save Profile</button>
+  </div>
+</div>
+
+</main>
+</div><!-- /app-screen -->
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading">
+  <div style="width:40px;height:40px;border:4px solid rgba(230,92,0,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite"></div>
+  <div class="loading-text" id="loading-text">Loading…</div>
+</div>
+
+<div id="toast"></div>
+
+<!-- EDIT MODAL -->
+<div class="mo" id="edit-modal" onclick="ovClick(event,'edit-modal')">
+  <div class="md">
+    <h3>✏️ Edit Entry</h3>
+    <div class="fgrid">
+      <div class="fg2"><label>Date</label><input type="date" id="ed-date"></div>
+      <div class="fg2"><label>Work Type</label><select id="ed-type">
+        <option value="work">✅ Full Day</option><option value="half">🌓 Half Day</option>
+        <option value="overtime">⚡ Overtime</option><option value="holiday">🎉 Holiday</option><option value="absent">❌ Absent</option>
+      </select></div>
+      <div class="fg2"><label>Wage (₹)</label><input type="number" id="ed-wage" min="0" step="0.5"></div>
+      <div class="fg2"><label>Hours</label><input type="number" id="ed-hours" min="0" max="24" step="0.5"></div>
+      <div class="fg2"><label>Employer</label><input type="text" id="ed-employer"></div>
+      <div class="fg2"><label>Payment</label><select id="ed-paid">
+        <option value="paid">✅ Paid</option><option value="pending">⏳ Pending</option><option value="partial">🔶 Partial</option>
+      </select></div>
+    </div>
+    <div class="fg2" style="margin-top:10px"><label>Notes</label><textarea id="ed-note" style="min-height:60px"></textarea></div>
+    <div class="ma">
+      <button class="bs" onclick="closeModal('edit-modal')">Cancel</button>
+      <button class="bp" onclick="saveEdit()">💾 Update</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════ */
+const API = '';  // same origin — change to http://localhost:3000 if running separately
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let token    = localStorage.getItem('wt_token') || '';
+let userData = null;
+let allEntries = [];   // client-side cache for filtering/display
+let editId   = null;
+let curTab   = 'dashboard';
+
+/* ═══════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════ */
+const fmtM = n => '₹' + Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2});
+const pad  = n => String(n).padStart(2,'0');
+const todayStr = () => { const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+const parseD = s => { const p=s.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); };
+const fmtD = s => {
+  const d = parseD(s);
+  const wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${wd[d.getDay()]}, ${d.getDate()} ${mo[d.getMonth()]} ${d.getFullYear()}`;
+};
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+const TE = {work:'🔨',half:'🌓',overtime:'⚡',holiday:'🎉',absent:'❌'};
+const TL = {work:'Full Day',half:'Half Day',overtime:'Overtime',holiday:'Holiday',absent:'Absent'};
+const TD = {work:'dw',half:'dh',overtime:'do',holiday:'dho',absent:'da'};
+const TB = {work:'bw',half:'bh',overtime:'bo',holiday:'bho',absent:'ba'};
+const PI = {paid:'✅',pending:'⏳',partial:'🔶'};
+const PL = {paid:'Paid',pending:'Pending',partial:'Partial'};
+const PC = {paid:'pp',pending:'ppnd',partial:'ppt'};
+
+function showToast(msg,dur=2400) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),dur);
+}
+function setLoading(show,txt='Loading…') {
+  const el=document.getElementById('loading');
+  document.getElementById('loading-text').textContent=txt;
+  el.classList.toggle('show',show);
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function ovClick(e,id) { if(e.target===e.currentTarget) closeModal(id); }
+
+/* ═══════════════════════════════════════
+   API HELPER
+═══════════════════════════════════════ */
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: { 'Content-Type':'application/json', ...(token ? { Authorization:`Bearer ${token}` } : {}) }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+/* ═══════════════════════════════════════
+   AUTH
+═══════════════════════════════════════ */
+function showAuthTab(t) {
+  document.querySelectorAll('.auth-tab').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(e=>e.classList.remove('active'));
+  document.getElementById('atab-'+t).classList.add('active');
+  document.getElementById('aform-'+t).classList.add('active');
+}
+
+async function doLogin() {
+  const phone = document.getElementById('login-phone').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-err');
+  errEl.style.display='none';
+  if (!phone||!pass) { errEl.textContent='Enter phone and password'; errEl.style.display='block'; return; }
+  try {
+    setLoading(true,'Logging in…');
+    const res = await api('POST','/api/auth/login',{phone,password:pass});
+    token = res.token;
+    userData = res.user;
+    localStorage.setItem('wt_token',token);
+    setLoading(false);
+    startApp();
+  } catch(e) {
+    setLoading(false);
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+async function doRegister() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const pass  = document.getElementById('reg-pass').value;
+  const pass2 = document.getElementById('reg-pass2').value;
+  const errEl = document.getElementById('reg-err');
+  errEl.style.display='none';
+  if (!name||!phone||!pass) { errEl.textContent='All fields are required'; errEl.style.display='block'; return; }
+  if (pass!==pass2) { errEl.textContent='Passwords do not match'; errEl.style.display='block'; return; }
+  try {
+    setLoading(true,'Creating account…');
+    const res = await api('POST','/api/auth/register',{name,phone,password:pass});
+    token = res.token;
+    userData = res.user;
+    localStorage.setItem('wt_token',token);
+    setLoading(false);
+    startApp();
+  } catch(e) {
+    setLoading(false);
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+function doLogout() {
+  if (!confirm('Logout?')) return;
+  token = '';
+  userData = null;
+  allEntries = [];
+  localStorage.removeItem('wt_token');
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+}
+
+async function startApp() {
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  // refresh user data
+  try { const r = await api('GET','/api/auth/me'); userData = r.user; } catch(e) {}
+  document.getElementById('user-chip').textContent = '👤 ' + (userData?.name||'Worker');
+  // Pre-fill daily rate from profile
+  const profileRate = +(userData?.profile?.dailyRate)||0;
+  if (profileRate) {
+    document.getElementById('entry-rate').value = profileRate;
+    document.getElementById('rate-display').textContent = '₹'+profileRate+'/day';
+    autoCalcWage();
+  }
+  // load entries into cache
+  await loadAllEntries();
+  renderDashboard();
+  populateMonthFilter();
+  populateYearSelector();
+}
+
+/* ═══════════════════════════════════════
+   ENTRY CACHE
+═══════════════════════════════════════ */
+async function loadAllEntries() {
+  try {
+    allEntries = await api('GET','/api/entries');
+  } catch(e) { allEntries = []; }
+}
+
+/* ═══════════════════════════════════════
+   TAB NAVIGATION
+═══════════════════════════════════════ */
+function switchTab(tab) {
+  if (curTab===tab) return;
+  curTab = tab;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nt').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (tab==='dashboard') renderDashboard();
+  if (tab==='history')   { populateMonthFilter(); renderHistory(); }
+  if (tab==='report')    renderReport();
+  if (tab==='profile')   loadProfile();
+}
+
+/* ═══════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════ */
+function renderDashboard() {
+  const now = new Date();
+  const yr = now.getFullYear(), mo = now.getMonth();
+  const monthEs = allEntries.filter(e=>{ const d=parseD(e.date); return d.getFullYear()===yr&&d.getMonth()===mo; });
+
+  const totalE  = allEntries.reduce((s,e)=>s+(+e.wage||0),0);
+  const monthE  = monthEs.reduce((s,e)=>s+(+e.wage||0),0);
+  const workD   = monthEs.filter(e=>e.type!=='absent').length;
+  const pendE   = allEntries.filter(e=>e.paid==='pending').reduce((s,e)=>s+(+e.wage||0),0);
+
+  document.getElementById('summary-grid').innerHTML =
+    sc('c-or','This Month',fmtM(monthE),workD+' days worked') +
+    sc('c-gr','Total Earned',fmtM(totalE),'All time') +
+    sc('c-go','Pending',fmtM(pendE),'Unpaid wages') +
+    sc('c-bl','Total Entries',allEntries.length,'Days recorded');
+
+  const recent = allEntries.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+  renderEntryList('recent-list',recent,false);
+}
+function sc(cls,lbl,val,sub){ return `<div class="sc ${cls}"><div class="lbl">${lbl}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`; }
+
+/* ═══════════════════════════════════════
+   WAGE AUTO-CALCULATION
+═══════════════════════════════════════ */
+function autoCalcWage() {
+  const type    = document.getElementById('entry-type').value;
+  const rate    = parseFloat(document.getElementById('entry-rate').value) || 0;
+  const otHrs   = parseFloat(document.getElementById('entry-ot-hours').value) || 0;
+  const otRate  = parseFloat(document.getElementById('entry-ot-rate').value) || 0;
+  const deduct  = parseFloat(document.getElementById('entry-deduct').value) || 0;
+
+  let base = 0, desc = '';
+
+  if (type === 'work') {
+    base = rate;
+    desc = `Full day: ₹${rate}`;
+  } else if (type === 'half') {
+    base = rate / 2;
+    desc = `Half day: ₹${rate} ÷ 2 = ₹${base}`;
+  } else if (type === 'overtime') {
+    const otPay = otHrs * otRate;
+    base = rate + otPay;
+    desc = `Full day ₹${rate} + OT ${otHrs}h×₹${otRate} = ₹${base}`;
+  } else if (type === 'holiday') {
+    base = rate;
+    desc = `Holiday pay: ₹${rate}`;
+  } else if (type === 'absent') {
+    base = 0;
+    desc = 'Absent — no wage';
+  }
+
+  const finalWage = Math.max(0, base - deduct);
+  if (deduct > 0) desc += ` − ₹${deduct} deduction`;
+
+  // Update preview
+  document.getElementById('wage-preview-amt').textContent  = '₹' + finalWage.toLocaleString('en-IN');
+  document.getElementById('wage-preview-desc').textContent = desc || 'Enter daily rate above';
+  document.getElementById('rate-display').textContent      = rate ? '₹'+rate+'/day' : '₹0/day';
+
+  // Auto-fill the final wage input
+  document.getElementById('entry-wage').value = finalWage || '';
+
+  // Auto-fill hours
+  const hrsEl = document.getElementById('entry-hours');
+  if (!hrsEl.value) {
+    hrsEl.value = type==='half' ? 4 : type==='absent' ? 0 : type==='overtime' ? (8 + otHrs) : 8;
+  }
+
+  // Show banner if no rate set in profile
+  const profileRate = +(userData?.profile?.dailyRate)||0;
+  const banner = document.getElementById('rate-banner');
+  if (banner) banner.style.display = (!profileRate && !rate) ? 'flex' : 'none';
+}
+
+/* ═══════════════════════════════════════
+   ADD / SAVE ENTRY
+═══════════════════════════════════════ */
+function clearForm() {
+  const profileRate = +(userData?.profile?.dailyRate)||0;
+  document.getElementById('entry-date').value     = todayStr();
+  document.getElementById('entry-type').value     = 'work';
+  document.getElementById('entry-rate').value     = profileRate || '';
+  document.getElementById('entry-ot-hours').value = '';
+  document.getElementById('entry-ot-rate').value  = '';
+  document.getElementById('entry-deduct').value   = '';
+  document.getElementById('entry-wage').value     = '';
+  document.getElementById('entry-hours').value    = '';
+  document.getElementById('entry-employer').value = '';
+  document.getElementById('entry-paid').value     = 'paid';
+  document.getElementById('entry-note').value     = '';
+  // Re-run calc with fresh rate
+  if (profileRate) {
+    document.getElementById('rate-display').textContent = '₹'+profileRate+'/day';
+    autoCalcWage();
+  } else {
+    document.getElementById('wage-preview-amt').textContent  = '₹0';
+    document.getElementById('wage-preview-desc').textContent = 'Enter daily rate above';
+    document.getElementById('rate-display').textContent      = '₹0/day';
+  }
+}
+
+async function saveEntry() {
+  const date = document.getElementById('entry-date').value;
+  if (!date) { showToast('⚠ Select a date'); return; }
+  const wage = parseFloat(document.getElementById('entry-wage').value)||0;
+  const body = {
+    date, type: document.getElementById('entry-type').value,
+    wage,
+    hours:    +document.getElementById('entry-hours').value||0,
+    employer: document.getElementById('entry-employer').value.trim(),
+    paid:     document.getElementById('entry-paid').value,
+    note:     document.getElementById('entry-note').value.trim()
+  };
+  try {
+    setLoading(true,'Saving…');
+    const entry = await api('POST','/api/entries',body);
+    allEntries.push(entry);
+    setLoading(false);
+    showToast('✅ Entry saved — ₹'+wage.toLocaleString('en-IN')+' for '+fmtD(date));
+    clearForm();
+    curTab=''; switchTab('dashboard');
+  } catch(e) {
+    setLoading(false);
+    showToast('⚠ '+e.message);
+  }
+}
+
+function quickEntry(type) {
+  const rate = +(userData?.profile?.dailyRate)||0;
+  document.getElementById('entry-date').value     = todayStr();
+  document.getElementById('entry-type').value     = type;
+  document.getElementById('entry-rate').value     = rate || '';
+  document.getElementById('entry-ot-hours').value = '';
+  document.getElementById('entry-ot-rate').value  = '';
+  document.getElementById('entry-deduct').value   = '';
+  document.getElementById('entry-hours').value    = type==='half'?4:type==='absent'?0:8;
+  document.getElementById('entry-employer').value = '';
+  document.getElementById('entry-paid').value     = 'pending';
+  autoCalcWage();
+  document.getElementById('entry-wage').value     = type==='half'?rate/2:type==='absent'?0:rate||'';
+  document.getElementById('entry-note').value    = '';
+  curTab=''; switchTab('add');
+  showToast('📝 Quick entry ready — check and save');
+}
+
+/* ═══════════════════════════════════════
+   HISTORY
+═══════════════════════════════════════ */
+function populateMonthFilter() {
+  const months = {};
+  allEntries.forEach(e=>{ months[e.date.slice(0,7)]=true; });
+  const sorted = Object.keys(months).sort().reverse();
+  const sel = document.getElementById('flt-month');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All Months</option>';
+  sorted.forEach(m=>{
+    const p = m.split('-');
+    const lbl = parseD(m+'-01').toLocaleString('en-IN',{month:'long',year:'numeric'});
+    sel.innerHTML += `<option value="${m}"${m===cur?' selected':''}>${lbl}</option>`;
+  });
+}
+
+function renderHistory() {
+  const q    = (document.getElementById('srch').value||'').toLowerCase();
+  const mon  = document.getElementById('flt-month').value;
+  const typ  = document.getElementById('flt-type').value;
+  const paid = document.getElementById('flt-paid').value;
+  const list = allEntries.filter(e=>{
+    if (mon  && e.date.slice(0,7)!==mon)  return false;
+    if (typ  && e.type!==typ)             return false;
+    if (paid && e.paid!==paid)            return false;
+    if (q && ((e.employer||'')+(e.note||'')+e.date).toLowerCase().indexOf(q)===-1) return false;
+    return true;
+  }).sort((a,b)=>b.date.localeCompare(a.date));
+  renderEntryList('history-list',list,true);
+}
+
+function renderEntryList(cid,entries,editable) {
+  const el = document.getElementById(cid);
+  if (!entries.length) {
+    el.innerHTML = `<div class="empty"><div class="ico">📭</div><h3>No entries found</h3><p>${editable?'Try changing filters.':'Start recording your daily work!'}</p></div>`;
+    return;
+  }
+  el.innerHTML = entries.map(e=>{
+    const hw  = +e.wage>0;
+    const id  = e._id || e.id;
+    return `<div class="ei">
+      <div class="ed ${TD[e.type]||'dw'}">${TE[e.type]||'📋'}</div>
+      <div class="ein">
+        <div class="etop">
+          <div>
+            <div class="edate">${fmtD(e.date)}</div>
+            <div class="emeta" style="margin-top:5px">
+              <span class="bdg ${TB[e.type]||'bw'}">${TL[e.type]||e.type}</span>
+              ${e.hours?`<span class="mc">⏱ ${e.hours}h</span>`:''}
+              ${e.employer?`<span class="mc">📍 ${esc(e.employer)}</span>`:''}
+              <span class="pc ${PC[e.paid]||'ppnd'}">${PI[e.paid]||''} ${PL[e.paid]||''}</span>
+            </div>
+          </div>
+          <div class="eamt${hw?'':' z'}">${hw?fmtM(e.wage):'—'}</div>
+        </div>
+        ${e.note?`<div class="enote">📝 ${esc(e.note)}</div>`:''}
+        ${editable?`<div class="ea">
+          <button class="bs bsm" onclick="openEdit('${id}')">✏️ Edit</button>
+          <button class="bd" onclick="delEntry('${id}')">🗑 Delete</button>
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   EDIT MODAL
+═══════════════════════════════════════ */
+function openEdit(id) {
+  const e = allEntries.find(x=>(x._id||x.id)===id);
+  if (!e) return;
+  editId = id;
+  document.getElementById('ed-date').value    = e.date;
+  document.getElementById('ed-type').value    = e.type;
+  document.getElementById('ed-wage').value    = e.wage;
+  document.getElementById('ed-hours').value   = e.hours;
+  document.getElementById('ed-employer').value= e.employer||'';
+  document.getElementById('ed-paid').value    = e.paid;
+  document.getElementById('ed-note').value    = e.note||'';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+async function saveEdit() {
+  if (!editId) return;
+  const body = {
+    date:     document.getElementById('ed-date').value,
+    type:     document.getElementById('ed-type').value,
+    wage:     +document.getElementById('ed-wage').value||0,
+    hours:    +document.getElementById('ed-hours').value||0,
+    employer: document.getElementById('ed-employer').value.trim(),
+    paid:     document.getElementById('ed-paid').value,
+    note:     document.getElementById('ed-note').value.trim()
+  };
+  try {
+    setLoading(true,'Updating…');
+    const updated = await api('PUT',`/api/entries/${editId}`,body);
+    const idx = allEntries.findIndex(x=>(x._id||x.id)===editId);
+    if (idx>-1) allEntries[idx] = updated;
+    setLoading(false);
+    closeModal('edit-modal');
+    renderHistory();
+    showToast('✅ Entry updated!');
+  } catch(e) { setLoading(false); showToast('⚠ '+e.message); }
+}
+
+async function delEntry(id) {
+  if (!confirm('Delete this entry? Cannot be undone.')) return;
+  try {
+    setLoading(true,'Deleting…');
+    await api('DELETE',`/api/entries/${id}`);
+    allEntries = allEntries.filter(x=>(x._id||x.id)!==id);
+    setLoading(false);
+    renderHistory();
+    renderDashboard();
+    showToast('🗑 Entry deleted');
+  } catch(e) { setLoading(false); showToast('⚠ '+e.message); }
+}
+
+/* ═══════════════════════════════════════
+   REPORT
+═══════════════════════════════════════ */
+function populateYearSelector() {
+  const now = new Date();
+  const cy  = now.getFullYear();
+  const sel = document.getElementById('rpt-year');
+  sel.innerHTML='';
+  for (let y=cy;y>=cy-5;y--) {
+    const o = document.createElement('option');
+    o.value=y; o.textContent=y; if(y===cy) o.selected=true;
+    sel.appendChild(o);
+  }
+  document.getElementById('rpt-month').value = String(now.getMonth());
+}
+
+function renderReport() {
+  const ySel = document.getElementById('rpt-year');
+  if (!ySel.value) return;
+  const year  = parseInt(ySel.value);
+  const month = document.getElementById('rpt-month').value;
+
+  let data = allEntries.filter(e=>{
+    const d = parseD(e.date);
+    if (d.getFullYear()!==year) return false;
+    if (month!=='' && d.getMonth()!==parseInt(month)) return false;
+    return true;
+  });
+
+  const earned   = data.reduce((s,e)=>s+(+e.wage||0),0);
+  const workD    = data.filter(e=>e.type==='work').length;
+  const halfD    = data.filter(e=>e.type==='half').length;
+  const otD      = data.filter(e=>e.type==='overtime').length;
+  const absD     = data.filter(e=>e.type==='absent').length;
+  const hrs      = data.reduce((s,e)=>s+(+e.hours||0),0);
+  const paidA    = data.filter(e=>e.paid==='paid').reduce((s,e)=>s+(+e.wage||0),0);
+  const pendA    = data.filter(e=>e.paid==='pending').reduce((s,e)=>s+(+e.wage||0),0);
+
+  const rows=[['📅 Full Days',workD],['🌓 Half Days',halfD],['⚡ Overtime',otD],['❌ Absent Days',absD],
+    ['⏱ Total Hours',hrs+'h'],['✅ Paid',fmtM(paidA)],['⏳ Pending',fmtM(pendA)]];
+  const tbl = `<div class="fc"><table class="stbl">${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table></div>`;
+
+  let bars='';
+  if (month==='') {
+    const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const mt = mn.map((_,i)=>data.filter(e=>parseD(e.date).getMonth()===i).reduce((s,e)=>s+(+e.wage||0),0));
+    const mx = Math.max(...mt,1);
+    bars = `<div class="st" style="margin-top:24px">📈 <span>Monthly</span> Breakdown</div><div class="fc">`+
+      mn.map((m,i)=>`<div class="mb"><div class="bl2"><span>${m}</span><span class="bv">${fmtM(mt[i])}</span></div><div class="bt"><div class="bf" style="width:${Math.round(mt[i]/mx*100)}%"></div></div></div>`).join('') +`</div>`;
+  }
+
+  document.getElementById('rpt-content').innerHTML =
+    `<div class="sg">
+      ${sc('c-or','Total Earned',fmtM(earned),'')}${sc('c-gr','Work Days',workD+halfD+otD,'')}
+      ${sc('c-go','Total Hours',hrs+'h','')}${sc('c-bl','Pending',fmtM(pendA),'')}
+    </div>${tbl}${bars}`;
+}
+
+/* ═══════════════════════════════════════
+   LOAN LETTER
+═══════════════════════════════════════ */
+function generateLoan() {
+  const p    = userData?.profile||{};
+  const bank = document.getElementById('ln-bank').value.trim()    ||'[Bank Name]';
+  const purp = document.getElementById('ln-purpose').value.trim() ||'personal loan';
+  const amt  = document.getElementById('ln-amount').value;
+  const mos  = parseInt(document.getElementById('ln-months').value)||6;
+
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth()-mos); cutoff.setHours(0,0,0,0);
+  const recent = allEntries.filter(e=>parseD(e.date)>=cutoff&&e.type!=='absent');
+  const totalE = recent.reduce((s,e)=>s+(+e.wage||0),0);
+  const avgMo  = Math.round(totalE/mos);
+  const wdays  = recent.filter(e=>e.type==='work'||e.type==='overtime').length;
+  const now    = new Date();
+  const td     = now.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  const frm    = cutoff.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  const to2    = now.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  const amtS   = amt?'₹'+Number(amt).toLocaleString('en-IN'):'[Amount]';
+
+  document.getElementById('loan-prev').textContent =
+`INCOME CERTIFICATE / SELF-DECLARATION
+══════════════════════════════════════
+
+Date: ${td}
+
+To,
+The Branch Manager,
+${bank}
+
+Subject: Income Declaration for ${purp.charAt(0).toUpperCase()+purp.slice(1)} — ${amtS}
+
+Respected Sir / Madam,
+
+I, ${userData?.name||'[Your Name]'}, son/daughter of ____________________,
+residing at ${p.address||'[Your Address]'},
+hereby declare that I am a daily wage worker in the occupation of
+${p.occupation||'[Occupation]'}.
+
+INCOME SUMMARY (Last ${mos} Months)
+─────────────────────────────────────────
+  Period Covered        : ${frm} to ${to2}
+  Total Days Worked     : ${wdays} days
+  Total Earnings        : ₹${totalE.toLocaleString('en-IN')}
+  Average Monthly Income: ₹${avgMo.toLocaleString('en-IN')} per month
+
+PERSONAL DETAILS
+─────────────────────────────────────────
+  Full Name      : ${userData?.name||'[Name]'}
+  Aadhaar / ID   : ${p.aadhaar||'[ID Number]'}
+  Mobile Number  : ${userData?.phone||'[Phone]'}
+  Occupation     : ${p.occupation||'[Occupation]'}
+  Daily Wage Rate: ₹${p.dailyRate||'[Daily Rate]'}
+
+I solemnly declare that the above information is true and correct.
+I am applying for a ${purp} of ${amtS} from ${bank}
+and undertake to repay as per the agreed terms.
+
+Yours faithfully,
+
+
+
+_________________________
+${userData?.name||'[Your Name]'}
+Date   : ${td}
+Mobile : ${userData?.phone||'[Phone]'}
+
+─────────────────────────────────────────
+Note: Self-declaration based on personal records maintained via
+the Daily Wage Tracker application.`;
+
+  showToast('📄 Certificate generated!');
+}
+
+function printLoan() {
+  const t = document.getElementById('loan-prev').textContent;
+  if (t.indexOf('Click')===0) { showToast('⚠ Generate certificate first'); return; }
+  const win=window.open('','_blank');
+  if (!win) { showToast('⚠ Allow pop-ups'); return; }
+  win.document.write('<!DOCTYPE html><html><head><title>Income Certificate</title><style>body{font-family:Georgia,serif;font-size:14px;line-height:1.8;padding:40px;white-space:pre-wrap;max-width:700px;margin:auto}@media print{@page{margin:2cm}body{padding:0}}</style></head><body>'+t.replace(/</g,'&lt;')+'</body></html>');
+  win.document.close(); win.focus(); setTimeout(()=>win.print(),600);
+}
+
+function copyLoan() {
+  const t = document.getElementById('loan-prev').textContent;
+  if (t.indexOf('Click')===0) { showToast('⚠ Generate certificate first'); return; }
+  if (navigator.clipboard) { navigator.clipboard.writeText(t).then(()=>showToast('📋 Copied!')).catch(()=>fbCopy(t)); }
+  else fbCopy(t);
+}
+function fbCopy(t) {
+  const ta=document.createElement('textarea'); ta.value=t; ta.style.cssText='position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try{document.execCommand('copy');showToast('📋 Copied!');}catch{showToast('⚠ Copy manually');}
+  document.body.removeChild(ta);
+}
+
+/* ═══════════════════════════════════════
+   PROFILE
+═══════════════════════════════════════ */
+function loadProfile() {
+  const p = userData?.profile||{};
+  document.getElementById('prf-name').value  = userData?.name||'';
+  document.getElementById('prf-phone').value = userData?.phone||'';
+  document.getElementById('prf-id').value    = p.aadhaar||'';
+  document.getElementById('prf-occ').value   = p.occupation||'';
+  document.getElementById('prf-rate').value  = p.dailyRate||'';
+  document.getElementById('prf-addr').value  = p.address||'';
+  updatePav();
+}
+function updatePav() {
+  const n    = (document.getElementById('prf-name').value||'').trim();
+  const pts  = n.split(/\s+/).filter(Boolean);
+  const ini  = pts.length>=2 ? pts[0][0]+pts[pts.length-1][0] : n.slice(0,2)||'?';
+  document.getElementById('pav').textContent = ini.toUpperCase();
+}
+async function saveProfile() {
+  const body = {
+    name:       document.getElementById('prf-name').value.trim(),
+    occupation: document.getElementById('prf-occ').value.trim(),
+    aadhaar:    document.getElementById('prf-id').value.trim(),
+    address:    document.getElementById('prf-addr').value.trim(),
+    dailyRate:  +document.getElementById('prf-rate').value||0
+  };
+  try {
+    setLoading(true,'Saving profile…');
+    const res = await api('PUT','/api/auth/profile',body);
+    userData = res.user;
+    document.getElementById('user-chip').textContent = '👤 '+userData.name;
+    // Sync new daily rate into Add Entry form instantly
+    const newRate = +(userData.profile?.dailyRate)||0;
+    document.getElementById('entry-rate').value = newRate || '';
+    document.getElementById('rate-display').textContent = newRate ? '₹'+newRate+'/day' : '₹0/day';
+    autoCalcWage();
+    setLoading(false);
+    showToast('✅ Profile saved! Daily rate updated to ₹'+newRate);
+  } catch(e) { setLoading(false); showToast('⚠ '+e.message); }
+}
+
+/* ═══════════════════════════════════════
+   INIT — check existing token
+═══════════════════════════════════════ */
+async function init() {
+  document.getElementById('entry-date').value = todayStr();
+  if (token) {
+    try {
+      setLoading(true,'Loading your data…');
+      await startApp();
+      setLoading(false);
+    } catch(e) {
+      setLoading(false);
+      token=''; localStorage.removeItem('wt_token');
+      document.getElementById('auth-screen').style.display='flex';
+    }
+  } else {
+    document.getElementById('auth-screen').style.display='flex';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+// Enter key support for auth forms
+document.addEventListener('keydown', e => {
+  if (e.key==='Enter') {
+    const la=document.getElementById('aform-login');
+    const ra=document.getElementById('aform-register');
+    if (la.classList.contains('active')) doLogin();
+    else if (ra.classList.contains('active')) doRegister();
+  }
+});
+</script>
+</body>
+</html>
