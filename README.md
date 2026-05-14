@@ -1,4 +1,4 @@
-just do one thing..# 💼 Daily Wage Tracker
+# 💼 Daily Wage Tracker
 ### *Daily Earnings Record — Built for Daily Wage Workers*
 
 A full-stack web application that helps daily wage workers **track their earnings**, manage work history, monitor payment status, and generate **income certificates for loan applications** — backed by a persistent MongoDB database.
