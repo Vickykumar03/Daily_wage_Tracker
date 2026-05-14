@@ -1,127 +1,188 @@
-# 💼 Daily Wage Tracker — Full Stack (MongoDB + Node.js)
+# 💼 Daily Wage Tracker
+### *Daily Earnings Record — Built for Daily Wage Workers*
 
-A complete wage tracking app for daily-wage workers with **Login/Register**, persistent **MongoDB storage**, and a **Loan Income Certificate** generator.
+A full-stack web application that helps daily wage workers track their earnings, work history, payment status, and generate income certificates for loan applications.
+
+---
+
+## 📸 Screenshots
+
+### 🔐 Login / Register
+![Login](login.png)
+
+### 🏠 Dashboard
+![Dashboard](DashBoard.png)
+
+### ➕ Add Work Entry
+![Data Entry 1](Data_Entry1.png)
+![Data Entry 2](Data_Entry2.png)
+
+### 📋 Work History
+![Edit History](Edit_History.png)
+
+### 📊 Earnings Report
+![Track Report](Track_Report.png)
+
+### 🏦 Loan Letter Generator
+![Loan](Loan.png)
+![Loan Application](Loan_Application.png)
+
+---
+
+## ✨ Features
+
+- 🔐 **User Authentication** — Register & login with phone number and password
+- ➕ **Add Work Entries** — Log date, work type, wage earned, hours worked, employer/job site, and payment status
+- ⚡ **Quick Actions** — One-click buttons to mark Full Day, Half Day, or Absent for today
+- 📋 **Work History** — View all past entries with search and filter by month, work type, and payment status; edit or delete any record
+- 📊 **Earnings Report** — Monthly summary with total earned, work days, total hours, and paid vs. pending breakdown
+- 🏦 **Loan Letter Generator** — Auto-generate a formal Income Certificate / Self-Declaration letter from your wage data for bank submissions
+- 👤 **User Profile** — Manage personal details for better letter generation
+
+---
+
+## 🛠️ Tech Stack
+
+**Backend**
+- Node.js + Express.js
+- MongoDB + Mongoose
+- JWT Authentication
+- bcrypt for password hashing
+
+**Frontend**
+- Vanilla HTML, CSS, JavaScript
+- Single-page application (`public/index.html`)
 
 ---
 
 ## 📁 Project Structure
 
 ```
-wage-tracker/
-├── server.js              ← Express server (entry point)
-├── .env                   ← Environment variables (create this)
-├── .env.example           ← Template for .env
+Daily_Wage_Tracker/
+├── server.js               # Entry point
 ├── package.json
-├── models/
-│   ├── User.js            ← User schema (auth + profile)
-│   └── Entry.js           ← Work entry schema
-├── routes/
-│   ├── auth.js            ← Register, Login, Profile APIs
-│   └── entries.js         ← CRUD APIs for work entries
+├── .gitignore
 ├── middleware/
-│   └── auth.js            ← JWT verification middleware
+│   └── auth.js             # JWT auth middleware
+├── models/
+│   ├── User.js             # User schema
+│   └── Entry.js            # Work entry schema
+├── routes/
+│   ├── auth.js             # Register / Login routes
+│   └── entries.js          # CRUD routes for work entries
 └── public/
-    └── index.html         ← Full frontend (HTML + CSS + JS)
+    └── index.html          # Frontend SPA
 ```
 
 ---
 
-## ⚙️ Setup Instructions
+## 🚀 Getting Started
 
-### 1. Prerequisites
-- **Node.js** v16+ → https://nodejs.org
-- **MongoDB** (local or Atlas)
-  - **Local:** Install from https://www.mongodb.com/try/download/community
-  - **Atlas (free cloud):** https://www.mongodb.com/atlas/database
+### Prerequisites
 
-### 2. Install Dependencies
+- [Node.js](https://nodejs.org/) v16+
+- [MongoDB](https://www.mongodb.com/) (local or Atlas)
+
+### Installation
+
 ```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/Daily_Wage_Tracker.git
+cd Daily_Wage_Tracker
+
+# 2. Install dependencies
 npm install
+
+# 3. Create a .env file in the root directory
+touch .env
 ```
 
-### 3. Create `.env` file
-```bash
-cp .env.example .env
-```
-Edit `.env`:
-```
+### Environment Variables
+
+Add the following to your `.env` file:
+
+```env
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/wage_tracker
-JWT_SECRET=change_this_to_a_long_random_string
-JWT_EXPIRES_IN=7d
+JWT_SECRET=your_super_secret_key_here
 ```
 
-> For MongoDB Atlas replace `MONGODB_URI` with your Atlas connection string:
-> `mongodb+srv://<user>:<pass>@cluster0.xxxxx.mongodb.net/wage_tracker`
+### Run the App
 
-### 4. Start MongoDB (if local)
 ```bash
-# macOS/Linux
-mongod --dbpath /data/db
+# Development mode (with nodemon)
+npm run dev
 
-# Windows
-"C:\Program Files\MongoDB\Server\7.0\bin\mongod.exe" --dbpath "C:\data\db"
-```
-
-### 5. Run the App
-```bash
+# Production mode
 npm start
 ```
-Open: **http://localhost:3000**
+
+Open your browser and go to: **http://localhost:3000**
 
 ---
 
-## 🔌 API Endpoints
+## 📱 How to Use
 
-### Auth
-| Method | URL | Description |
-|--------|-----|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login |
-| GET  | `/api/auth/me` | Get current user |
-| PUT  | `/api/auth/profile` | Update profile |
-
-### Entries (all require Bearer token)
-| Method | URL | Description |
-|--------|-----|-------------|
-| GET    | `/api/entries` | List all entries (with filters) |
-| POST   | `/api/entries` | Create new entry |
-| PUT    | `/api/entries/:id` | Update entry |
-| DELETE | `/api/entries/:id` | Delete entry |
-| GET    | `/api/entries/stats` | Summary statistics |
-| GET    | `/api/entries/report/:year` | Monthly breakdown |
+1. **Register** — Create an account with your full name, phone number, and password
+2. **Add Entry** — Go to *Add Entry* and fill in your daily work details
+3. **Dashboard** — See your current month's earnings and recent work entries at a glance
+4. **History** — Browse all past entries; use filters to find specific records; edit or delete as needed
+5. **Report** — Select a year and month to see a complete earnings breakdown
+6. **Loan Letter** — Enter bank name, loan purpose, and amount → generate a printable income certificate
 
 ---
 
-## ✨ Features
+## 🏦 Loan Letter Feature
 
-- 🔐 **Login / Register** with phone number + password (JWT)
-- 💾 **All data stored in MongoDB** — never lost
-- 📅 **Add work entries**: Full Day, Half Day, Overtime, Holiday, Absent
-- 💰 **Track wages** with payment status (Paid / Pending / Partial)
-- 📊 **Reports** with monthly bar charts
-- 🏦 **Loan Income Certificate** generator (print/copy)
-- 👤 **Worker Profile** (Name, Aadhaar, Occupation, Daily Rate, Address)
-- 🔍 **Search & Filter** history by month, type, payment
+The **Income Certificate / Self-Declaration** letter is auto-filled with:
 
----
+- Your name and recorded work data
+- Income summary for the selected period (Last 1 / 3 / 6 Months)
+- Total days worked, total earnings, and employer details
 
-## 🚀 Deploy to Production
-
-### Render.com (free tier)
-1. Push to GitHub
-2. Create Web Service on Render
-3. Set environment variables in Render dashboard
-4. Use MongoDB Atlas for database
-
-### Railway.app
-1. `railway init` → `railway up`
-2. Add MongoDB plugin or set Atlas URI
+You can **Print / Save as PDF** or **Copy Text** to submit directly to your bank or lender.
 
 ---
 
-## 🔒 Security Notes
-- Passwords are hashed with **bcryptjs** (salt 12)
-- JWTs expire in 7 days
-- Each user can only access their own entries
-- Change `JWT_SECRET` to a long random string in production
+## 🔒 Security
+
+- Passwords are hashed using **bcrypt** before storage
+- All protected routes require a valid **JWT token**
+- Tokens are stored client-side and sent via `Authorization` headers
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+```bash
+# 1. Fork the repository
+# 2. Create a new branch
+git checkout -b feature/your-feature-name
+
+# 3. Commit your changes
+git commit -m "Add: your feature description"
+
+# 4. Push to your branch
+git push origin feature/your-feature-name
+
+# 5. Open a Pull Request
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 👨‍💻 Author
+
+**Vicky Kumar**  
+- GitHub: [@your-username](https://github.com/your-username)
+
+---
+
+> 💡 *Built to empower daily wage workers with a simple tool to record their earnings and prove their income when it matters most.*
