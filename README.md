@@ -1,7 +1,7 @@
 # 💼 Daily Wage Tracker
 ### *Daily Earnings Record — Built for Daily Wage Workers*
 
-A full-stack web application that helps daily wage workers track their earnings, work history, payment status, and generate income certificates for loan applications.
+A full-stack web application that helps daily wage workers **track their earnings**, manage work history, monitor payment status, and generate **income certificates for loan applications** — all backed by a persistent MongoDB database.
 
 ---
 
@@ -31,27 +31,27 @@ A full-stack web application that helps daily wage workers track their earnings,
 
 ## ✨ Features
 
-- 🔐 **User Authentication** — Register & login with phone number and password
-- ➕ **Add Work Entries** — Log date, work type, wage earned, hours worked, employer/job site, and payment status
-- ⚡ **Quick Actions** — One-click buttons to mark Full Day, Half Day, or Absent for today
-- 📋 **Work History** — View all past entries with search and filter by month, work type, and payment status; edit or delete any record
-- 📊 **Earnings Report** — Monthly summary with total earned, work days, total hours, and paid vs. pending breakdown
-- 🏦 **Loan Letter Generator** — Auto-generate a formal Income Certificate / Self-Declaration letter from your wage data for bank submissions
-- 👤 **User Profile** — Manage personal details for better letter generation
+- 🔐 **Login / Register** — Phone number + password authentication with JWT
+- 💾 **Persistent Storage** — All data saved in MongoDB, never lost
+- ➕ **Add Work Entries** — Full Day, Half Day, Overtime, Holiday, or Absent
+- 💰 **Payment Tracking** — Mark wages as Paid / Pending / Partial
+- ⚡ **Quick Actions** — One-click buttons to log today as Full Day, Half Day, or Absent
+- 📋 **Work History** — Search & filter by month, work type, and payment status; edit or delete any record
+- 📊 **Earnings Report** — Monthly breakdown with total earned, work days, total hours, and paid vs. pending
+- 🏦 **Loan Income Certificate** — Auto-generate a formal self-declaration letter for bank submissions; print or copy
+- 👤 **Worker Profile** — Name, Aadhaar, occupation, daily rate, and address for better certificate generation
 
 ---
 
 ## 🛠️ Tech Stack
 
-**Backend**
-- Node.js + Express.js
-- MongoDB + Mongoose
-- JWT Authentication
-- bcrypt for password hashing
-
-**Frontend**
-- Vanilla HTML, CSS, JavaScript
-- Single-page application (`public/index.html`)
+| Layer | Technology |
+|-------|-----------|
+| Runtime | Node.js v16+ |
+| Framework | Express.js |
+| Database | MongoDB + Mongoose |
+| Auth | JWT + bcryptjs |
+| Frontend | Vanilla HTML, CSS, JavaScript (Single Page App) |
 
 ---
 
@@ -59,115 +59,152 @@ A full-stack web application that helps daily wage workers track their earnings,
 
 ```
 Daily_Wage_Tracker/
-├── server.js               # Entry point
+├── server.js              ← Express server (entry point)
+├── .env                   ← Environment variables (create this)
+├── .env.example           ← Template for .env
 ├── package.json
-├── .gitignore
-├── middleware/
-│   └── auth.js             # JWT auth middleware
 ├── models/
-│   ├── User.js             # User schema
-│   └── Entry.js            # Work entry schema
+│   ├── User.js            ← User schema (auth + profile)
+│   └── Entry.js           ← Work entry schema
 ├── routes/
-│   ├── auth.js             # Register / Login routes
-│   └── entries.js          # CRUD routes for work entries
+│   ├── auth.js            ← Register, Login, Profile APIs
+│   └── entries.js         ← CRUD APIs for work entries
+├── middleware/
+│   └── auth.js            ← JWT verification middleware
 └── public/
-    └── index.html          # Frontend SPA
+    └── index.html         ← Full frontend (HTML + CSS + JS)
 ```
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### 1. Prerequisites
 
-- [Node.js](https://nodejs.org/) v16+
-- [MongoDB](https://www.mongodb.com/) (local or Atlas)
+- **Node.js** v16+ → https://nodejs.org
+- **MongoDB** (local or Atlas)
+  - Local: https://www.mongodb.com/try/download/community
+  - Free cloud: https://www.mongodb.com/atlas/database
 
-### Installation
+### 2. Clone & Install
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/your-username/Daily_Wage_Tracker.git
 cd Daily_Wage_Tracker
-
-# 2. Install dependencies
 npm install
-
-# 3. Create a .env file in the root directory
-touch .env
 ```
 
-### Environment Variables
+### 3. Create `.env` file
 
-Add the following to your `.env` file:
+```bash
+cp .env.example .env
+```
+
+Edit `.env`:
 
 ```env
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/wage_tracker
-JWT_SECRET=your_super_secret_key_here
+JWT_SECRET=change_this_to_a_long_random_string
+JWT_EXPIRES_IN=7d
 ```
 
-### Run the App
+> For **MongoDB Atlas**, replace `MONGODB_URI` with your Atlas connection string:
+> `mongodb+srv://<user>:<pass>@cluster0.xxxxx.mongodb.net/wage_tracker`
+
+### 4. Start MongoDB (local only)
 
 ```bash
-# Development mode (with nodemon)
-npm run dev
+# macOS / Linux
+mongod --dbpath /data/db
 
-# Production mode
-npm start
+# Windows
+"C:\Program Files\MongoDB\Server\7.0\bin\mongod.exe" --dbpath "C:\data\db"
 ```
 
-Open your browser and go to: **http://localhost:3000**
+### 5. Run the App
+
+```bash
+# Production
+npm start
+
+# Development (with nodemon)
+npm run dev
+```
+
+Open your browser: **http://localhost:3000**
+
+---
+
+## 🔌 API Endpoints
+
+### Auth
+
+| Method | URL | Description |
+|--------|-----|-------------|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | Login |
+| GET | `/api/auth/me` | Get current user |
+| PUT | `/api/auth/profile` | Update profile |
+
+### Entries *(all require Bearer token)*
+
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/api/entries` | List all entries (with filters) |
+| POST | `/api/entries` | Create new entry |
+| PUT | `/api/entries/:id` | Update entry |
+| DELETE | `/api/entries/:id` | Delete entry |
+| GET | `/api/entries/stats` | Summary statistics |
+| GET | `/api/entries/report/:year` | Monthly breakdown |
 
 ---
 
 ## 📱 How to Use
 
 1. **Register** — Create an account with your full name, phone number, and password
-2. **Add Entry** — Go to *Add Entry* and fill in your daily work details
-3. **Dashboard** — See your current month's earnings and recent work entries at a glance
-4. **History** — Browse all past entries; use filters to find specific records; edit or delete as needed
-5. **Report** — Select a year and month to see a complete earnings breakdown
+2. **Add Entry** — Go to *Add Entry* and log your daily work details
+3. **Dashboard** — See this month's earnings and recent entries at a glance
+4. **History** — Browse all records; filter by month, type, or payment; edit or delete as needed
+5. **Report** — Select year & month for a full earnings breakdown
 6. **Loan Letter** — Enter bank name, loan purpose, and amount → generate a printable income certificate
 
 ---
 
 ## 🏦 Loan Letter Feature
 
-The **Income Certificate / Self-Declaration** letter is auto-filled with:
+The **Income Certificate / Self-Declaration** is auto-filled with:
 
-- Your name and recorded work data
+- Your name and personal details from your profile
 - Income summary for the selected period (Last 1 / 3 / 6 Months)
-- Total days worked, total earnings, and employer details
+- Total days worked, total earnings, and employer/job site details
 
-You can **Print / Save as PDF** or **Copy Text** to submit directly to your bank or lender.
+Use **Print / Save PDF** or **Copy Text** to submit to your bank or lender.
 
 ---
 
+
 ## 🔒 Security
 
-- Passwords are hashed using **bcrypt** before storage
-- All protected routes require a valid **JWT token**
-- Tokens are stored client-side and sent via `Authorization` headers
+- Passwords hashed with **bcryptjs** (salt rounds: 12)
+- JWTs expire in **7 days**
+- Each user can only access their **own entries**
+- Always change `JWT_SECRET` to a long random string in production
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
-
 ```bash
 # 1. Fork the repository
-# 2. Create a new branch
+# 2. Create a feature branch
 git checkout -b feature/your-feature-name
 
 # 3. Commit your changes
 git commit -m "Add: your feature description"
 
-# 4. Push to your branch
+# 4. Push and open a Pull Request
 git push origin feature/your-feature-name
-
-# 5. Open a Pull Request
 ```
 
 ---
@@ -180,8 +217,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 👨‍💻 Author
 
-**Vicky Kumar**  
-- GitHub: [@your-username](https://github.com/your-username)
+**Vicky Kumar**
+- GitHub: [@your-username](https://github.com/Vickykumar03)
 
 ---
 
